@@ -172,6 +172,7 @@ func (k msgServer) CreatePullRequest(goCtx context.Context, msg *types.MsgCreate
 
 	headJson, _ := json.Marshal(head)
 	baseJson, _ := json.Marshal(base)
+	issuesJson, _ := json.Marshal(pullRequest.Issues)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(sdk.EventTypeMessage,
@@ -187,6 +188,7 @@ func (k msgServer) CreatePullRequest(goCtx context.Context, msg *types.MsgCreate
 			sdk.NewAttribute(types.EventAttributePullRequestDraftKey, strconv.FormatBool(pullRequest.Draft)),
 			sdk.NewAttribute(types.EventAttributePullRequestHeadKey, string(headJson)),
 			sdk.NewAttribute(types.EventAttributePullRequestBaseKey, string(baseJson)),
+			sdk.NewAttribute(types.EventAttributePullRequestIssuesKey, string(issuesJson)),
 			sdk.NewAttribute(types.EventAttributeCreatedAtKey, strconv.FormatInt(pullRequest.CreatedAt, 10)),
 			sdk.NewAttribute(types.EventAttributeUpdatedAtKey, strconv.FormatInt(pullRequest.UpdatedAt, 10)),
 			sdk.NewAttribute(types.EventAttributeClosedAtKey, strconv.FormatInt(pullRequest.ClosedAt, 10)),

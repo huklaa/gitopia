@@ -282,6 +282,7 @@ const (
 	EventAttributePullRequestDraftKey          = "PullRequestDraft"
 	EventAttributePullRequestHeadKey           = "PullRequestHead"
 	EventAttributePullRequestBaseKey           = "PullRequestBase"
+	EventAttributePullRequestIssuesKey         = "PullRequestIssues"
 	EventAttributePullRequestMergeCommitShaKey = "PullRequestMergeCommitSha"
 	EventAttributePullRequestMergedByKey       = "PullRequestMergedBy"
 	EventAttributePullRequestMergedAtKey       = "PullRequestMergedAt"

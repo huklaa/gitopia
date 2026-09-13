@@ -2,8 +2,10 @@ package keeper_test
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
@@ -90,6 +92,29 @@ func TestPullRequestMsgServerCreate(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestPullRequestMsgServerCreateEmitsLinkedIssues(t *testing.T) {
+	srv, ctx := setupMsgServer(t)
+
+	users, repositoryId, branches := setupPrePullRequest(ctx, t, srv)
+	_, err := srv.CreatePullRequest(ctx, &types.MsgCreatePullRequest{
+		Creator:          users[0],
+		HeadRepositoryId: repositoryId,
+		HeadBranch:       branches[0],
+		BaseRepositoryId: repositoryId,
+		BaseBranch:       branches[1],
+		IssueIids:        []uint64{1},
+	})
+	require.NoError(t, err)
+
+	attributes, found := sdk.UnwrapSDKContext(ctx).EventManager().Events().GetAttributes(types.EventAttributePullRequestIssuesKey)
+	require.True(t, found)
+	require.Len(t, attributes, 1)
+
+	var issues []*types.IssueIid
+	require.NoError(t, json.Unmarshal([]byte(attributes[0].Value), &issues))
+	require.Equal(t, []*types.IssueIid{{Iid: 1, Id: 0}}, issues)
 }
 
 func TestPullRequestMsgServerUpdateTitle(t *testing.T) {
