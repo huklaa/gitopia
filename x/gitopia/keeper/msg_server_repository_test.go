@@ -274,6 +274,9 @@ func TestRepositoryMsgServerUpdateCollaborator(t *testing.T) {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
+				attributes, found := ctx.EventManager().Events().GetAttributes(types.EventAttributeRepoCollabPermKey)
+				require.True(t, found)
+				require.Equal(t, tc.request.Role, attributes[len(attributes)-1].Value)
 			}
 		})
 	}
